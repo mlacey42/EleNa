@@ -4,7 +4,7 @@ EleNa is an elevation-based navigation system that determines, given a start and
 
 ## Backend
 
-To download the dependencies for the conda environment, use the following command:  
+The backend makes use of a conda environment, so miniconda or anaconda must be installed. To download the dependencies for the conda environment, use the following command:  
 `conda env update --file environment.yml --prune`
 
 Once installed, activate the environment using one of the following commands (depending on your os):  
