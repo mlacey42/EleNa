@@ -11,5 +11,5 @@ Once installed, activate the environment using one of the following commands (de
 `conda activate ox`  
 `activate ox`
 
-To run the back-end server use:  
+To run the backend server use:  
  `python app.py`

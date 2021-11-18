@@ -1,0 +1,148 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module algorithm</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>algorithm</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:c%3A%5Cusers%5Cmjlx4%5Cdesktop%5Celena%5Cbackend%5Calgorithm.py">c:\users\mjlx4\desktop\elena\backend\algorithm.py</a></font></td></tr></table>
+    <p></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="math.html">math</a><br>
+</td><td width="25%" valign=top><a href="networkx.html">networkx</a><br>
+</td><td width="25%" valign=top><a href="osmnx.html">osmnx</a><br>
+</td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="builtins.html#object">builtins.object</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="algorithm.html#GenerateMap">GenerateMap</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="GenerateMap">class <strong>GenerateMap</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr><td bgcolor="#ffc8d8"><tt>&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="GenerateMap-__init__"><strong>__init__</strong></a>(self)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="GenerateMap-address_to_coords"><strong>address_to_coords</strong></a>(self, address)</dt><dd><tt>Returns&nbsp;latitude&nbsp;and&nbsp;longitude&nbsp;given&nbsp;an&nbsp;address<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;address(str):&nbsp;A&nbsp;valid&nbsp;address<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;tuple:&nbsp;(longitude,&nbsp;latitude)</tt></dd></dl>
+
+<dl><dt><a name="GenerateMap-coords"><strong>coords</strong></a>(self, G, node)</dt><dd><tt>Returns&nbsp;latitude&nbsp;and&nbsp;longitude&nbsp;given&nbsp;a&nbsp;node<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;G(MultiDiGraph):&nbsp;The&nbsp;graph&nbsp;of&nbsp;nodes<br>
+&nbsp;&nbsp;&nbsp;&nbsp;node(node):&nbsp;A&nbsp;node&nbsp;on&nbsp;the&nbsp;map<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;tuple:&nbsp;(longitude,&nbsp;latitude)</tt></dd></dl>
+
+<dl><dt><a name="GenerateMap-create_graph"><strong>create_graph</strong></a>(self, location, network_type)</dt><dd><tt>Creates&nbsp;a&nbsp;directed&nbsp;graph&nbsp;of&nbsp;nodes&nbsp;and&nbsp;edges&nbsp;for&nbsp;a&nbsp;given&nbsp;location<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;location(str):&nbsp;A&nbsp;valid&nbsp;location&nbsp;in&nbsp;the&nbsp;form&nbsp;of&nbsp;city,&nbsp;state,&nbsp;country<br>
+&nbsp;&nbsp;&nbsp;&nbsp;network_type(str):&nbsp;The&nbsp;type&nbsp;of&nbsp;map&nbsp;(drive,&nbsp;walk,&nbsp;bike,&nbsp;etc.)<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;G(MultiDiGraph):&nbsp;The&nbsp;graph&nbsp;of&nbsp;nodes</tt></dd></dl>
+
+<dl><dt><a name="GenerateMap-dijkstra_algorithm"><strong>dijkstra_algorithm</strong></a>(self, G, start, end, mode, percent)</dt><dd><tt>Uses&nbsp;dijkstra's&nbsp;algorithm&nbsp;to&nbsp;find&nbsp;a&nbsp;path&nbsp;where&nbsp;elevation&nbsp;gain&nbsp;is&nbsp;min/max<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;G(MultiDiGraph):&nbsp;The&nbsp;graph&nbsp;of&nbsp;nodes<br>
+&nbsp;&nbsp;&nbsp;&nbsp;start(node):&nbsp;The&nbsp;node&nbsp;for&nbsp;the&nbsp;starting&nbsp;location<br>
+&nbsp;&nbsp;&nbsp;&nbsp;end(node):&nbsp;The&nbsp;node&nbsp;for&nbsp;the&nbsp;ending&nbsp;location<br>
+&nbsp;&nbsp;&nbsp;&nbsp;mode(str):&nbsp;Whether&nbsp;or&nbsp;not&nbsp;to&nbsp;"max"&nbsp;or&nbsp;"min"&nbsp;elevation.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;percent(float):&nbsp;x%&nbsp;of&nbsp;the&nbsp;shortest&nbsp;path<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;path(list):&nbsp;A&nbsp;list&nbsp;of&nbsp;nodes&nbsp;comprising&nbsp;the&nbsp;path</tt></dd></dl>
+
+<dl><dt><a name="GenerateMap-euclidean"><strong>euclidean</strong></a>(self, curr_coord, end_coord)</dt><dd><tt>Finds&nbsp;euclidean&nbsp;dist&nbsp;between&nbsp;coords&nbsp;in&nbsp;meters&nbsp;using&nbsp;the&nbsp;Haversine&nbsp;formula<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;curr_coord(tuple):&nbsp;(latitude,&nbsp;longitude)&nbsp;of&nbsp;current&nbsp;node<br>
+&nbsp;&nbsp;&nbsp;&nbsp;end_coord(tuple):&nbsp;(latitude,&nbsp;longitude)&nbsp;of&nbsp;end&nbsp;node<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;The&nbsp;euclidean&nbsp;distance&nbsp;between&nbsp;curr_coord&nbsp;and&nbsp;end_coord</tt></dd></dl>
+
+<dl><dt><a name="GenerateMap-get_path"><strong>get_path</strong></a>(self, n_to_p, start, end)</dt><dd><tt>Trace&nbsp;the&nbsp;path&nbsp;starting&nbsp;from&nbsp;the&nbsp;end&nbsp;node&nbsp;to&nbsp;the&nbsp;start&nbsp;node<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;n_to_p(dict):&nbsp;A&nbsp;dictionary&nbsp;mapping&nbsp;node&nbsp;to&nbsp;parent<br>
+&nbsp;&nbsp;&nbsp;&nbsp;start(node):&nbsp;The&nbsp;first&nbsp;node&nbsp;in&nbsp;the&nbsp;path<br>
+&nbsp;&nbsp;&nbsp;&nbsp;end(node):&nbsp;The&nbsp;last&nbsp;node&nbsp;in&nbsp;the&nbsp;path<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;path(list):&nbsp;The&nbsp;list&nbsp;of&nbsp;nodes&nbsp;comprising&nbsp;the&nbsp;path</tt></dd></dl>
+
+<dl><dt><a name="GenerateMap-neareast_node"><strong>neareast_node</strong></a>(self, G, coords)</dt><dd><tt>Returns&nbsp;the&nbsp;nearest&nbsp;node&nbsp;to&nbsp;the&nbsp;given&nbsp;coordinates<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;G(MultiDiGraph):&nbsp;The&nbsp;graph&nbsp;of&nbsp;nodes<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#GenerateMap-coords">coords</a>(tuple):&nbsp;Tuple&nbsp;containing&nbsp;coordinates&nbsp;in&nbsp;the&nbsp;form&nbsp;(longitude,&nbsp;latitude)<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;node:&nbsp;The&nbsp;closest&nbsp;node&nbsp;to&nbsp;coords&nbsp;in&nbsp;G</tt></dd></dl>
+
+<dl><dt><a name="GenerateMap-path_elevation"><strong>path_elevation</strong></a>(self, G, path)</dt><dd><tt>Finds&nbsp;the&nbsp;elevation&nbsp;gain&nbsp;of&nbsp;a&nbsp;path&nbsp;of&nbsp;nodes<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;G(MultiDiGraph):&nbsp;The&nbsp;graph&nbsp;of&nbsp;nodes<br>
+&nbsp;&nbsp;&nbsp;&nbsp;path(list):&nbsp;A&nbsp;list&nbsp;of&nbsp;nodes&nbsp;comprising&nbsp;the&nbsp;path<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;elevation(float):&nbsp;The&nbsp;total&nbsp;elevation&nbsp;of&nbsp;the&nbsp;path</tt></dd></dl>
+
+<dl><dt><a name="GenerateMap-path_length"><strong>path_length</strong></a>(self, G, path)</dt><dd><tt>Finds&nbsp;the&nbsp;length&nbsp;of&nbsp;a&nbsp;path&nbsp;of&nbsp;nodes<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;G(MultiDiGraph):&nbsp;The&nbsp;graph&nbsp;of&nbsp;nodes<br>
+&nbsp;&nbsp;&nbsp;&nbsp;path(list):&nbsp;A&nbsp;list&nbsp;of&nbsp;nodes&nbsp;comprising&nbsp;the&nbsp;path<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;length(float):&nbsp;The&nbsp;total&nbsp;length&nbsp;of&nbsp;the&nbsp;path</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>locator</strong> = &lt;geopy.geocoders.nominatim.Nominatim object&gt;</td></tr></table>
+</body></html>
