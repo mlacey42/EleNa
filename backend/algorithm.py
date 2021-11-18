@@ -159,7 +159,9 @@ class GenerateMap:
         Returns:
             path(list): A list of nodes comprising the path
         """
-        shortest_path = nx.shortest_path(G, start, end)           # List containing nodes on shortest path
+        shortest_path = nx.dijkstra_path(G, start, end)           # List containing nodes on shortest path
+        print(self.path_length(G, shortest_path))
+        print(self.path_elevation(G, shortest_path))
         min_length = self.path_length(G, shortest_path)           # Length of shortest path
         max_length = min_length * (1 + percent)                   # Maximum allowed length for the new path
 
@@ -177,29 +179,38 @@ class GenerateMap:
             for neighbor in G.neighbors(curr[2]):
                 if neighbor not in visited:
                     # Find the estimated final distance of the path w/ the neighbor
-                    between_distance = G.edges[curr[2], neighbor, 0]['length']
+                    between_distance = G.edges[curr[2], neighbor, 0]['length'] + curr[1]
                     euclidean_distance = self.euclidean(self.coords(G, neighbor), self.coords(G, end))
+                    estimated_distance = between_distance + euclidean_distance
                     # If the estimate is shorter than the maximum_length, add the neighbor to the PQ
-                    if curr[1] + between_distance + euclidean_distance < max_length:
+                    if estimated_distance < max_length:
                         elevation_gain = (G.nodes[neighbor]['elevation'] - G.nodes[curr[2]]['elevation']) + curr[0] if (
                             G.nodes[neighbor]['elevation'] - G.nodes[curr[2]]['elevation']) > 0 else curr[0]
-                        distance = curr[1] + between_distance
+                        distance = between_distance
                         unvisited.put((mode_constant * elevation_gain, distance, neighbor, curr[2]))
                         node_to_parent[neighbor] = curr[2]
-                        
+                    # If the path is too long and we've reached the end node, trace back to the node where it diverges 
+                    if estimated_distance > max_length and neighbor == end:
+                        temp = unvisited.get()
+                        unvisited.put(temp)
+                        current_path = self.get_path(node_to_parent, start, curr[2])
+                        checkpoint = node_to_parent[temp[3]]
+                        if checkpoint in current_path:
+                            for x in range(current_path.index(checkpoint) + 1, len(current_path)):
+                                visited.remove(current_path[x])
+
         return self.get_path(node_to_parent, start, end)
 
 # def main():
-    # map_generator = GenerateMap()
-    # G = map_generator.create_graph("Amherst, MA", "drive")
-    # orig = map_generator.address_to_coords("230 Sunset Ave") 
-    # dest = map_generator.address_to_coords("495 West St")
-    # orig_node = map_generator.neareast_node(G, orig)
-    # dest_node = map_generator.neareast_node(G, dest)
-    # path = map_generator.dijkstra_algorithm(G, orig_node, dest_node, "max", .86)
-    # print(path)
-    # print(map_generator.path_length(G, path))
-    # print(map_generator.path_elevation(G, path))
+#     map_generator = GenerateMap()
+#     G = map_generator.create_graph("Amherst, MA", "drive")
+#     orig = map_generator.address_to_coords("230 Sunset Ave")
+#     dest = map_generator.address_to_coords("495 West St")
+#     orig_node = map_generator.neareast_node(G, orig)
+#     dest_node = map_generator.neareast_node(G, dest)
+#     path = map_generator.dijkstra_algorithm(G, orig_node, dest_node, "max", .23)
+#     print(map_generator.path_length(G, path))
+#     print(map_generator.path_elevation(G, path))
 
 # if __name__ == '__main__':
 #     main()
