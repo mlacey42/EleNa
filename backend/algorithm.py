@@ -84,6 +84,24 @@ class GenerateMap:
             length += G.edges[path[x], path[x + 1], 0]["length"]
         return length
 
+    def node_elevation(self, G, curr, neighbor):
+        """
+        Finds the elevation gain between two nodes
+
+        Parameters:
+            G(MultiDiGraph): The graph of nodes
+            curr(node): The current node
+            neighbor(node): The next node
+
+        Returns:
+            float: elevation gain
+        """
+        elevation = G.nodes[neighbor]['elevation'] - G.nodes[curr]['elevation']
+        if elevation < 0:
+            return 0
+        else:
+            return elevation
+
     def path_elevation(self, G, path):
         """
         Finds the elevation gain of a path of nodes
@@ -145,72 +163,51 @@ class GenerateMap:
             curr = n_to_p[curr]
         return path
 
-    def dijkstra_algorithm(self, G, start, end, mode, percent):
-        """
-        Uses dijkstra's algorithm to find a path where elevation gain is min/max
+    def dijkstra_algorithm(self, G, start, end, max, percent):
+            """
+            Uses dijkstra's algorithm to find a path where elevation gain is min/max
 
-        Parameters:
-            G(MultiDiGraph): The graph of nodes
-            start(node): The node for the starting location
-            end(node): The node for the ending location
-            mode(str): Whether or not to "max" or "min" elevation.
-            percent(float): x% of the shortest path
+            Parameters:
+                G(MultiDiGraph): The graph of nodes
+                start(node): The node for the starting location
+                end(node): The node for the ending location
+                max(bool): Whether or not to max or min elevation.
+                percent(float): x% of the shortest path
 
-        Returns:
-            path(list): A list of nodes comprising the path
-        """
-        shortest_path = nx.dijkstra_path(G, start, end)           # List containing nodes on shortest path
-        print(self.path_length(G, shortest_path))
-        print(self.path_elevation(G, shortest_path))
-        min_length = self.path_length(G, shortest_path)           # Length of shortest path
-        max_length = min_length * (1 + percent)                   # Maximum allowed length for the new path
+            Returns:
+                path(list): A list of nodes comprising the path
+            """
+            mode_constant = -1 if max else 1                                    # Constant used to max/min elevation        
+            min_length = self.path_length(G, nx.shortest_path(G, start, end))   # Length of shortest path      
+            max_length = min_length * (1 + percent)                             # Maximum allowed length for the new path
+            visited = []                                                        # List of visited nodes
+            node_to_parent = {}                                                 # Dictionary mapping nodes to their parents (used to find path)       
+            unvisited = PriorityQueue()                                         # PQ of tuples (elevation, dist, node)        
+            unvisited.put((G.nodes[start]['elevation'], 0, start))              # Initialize PQ with the start node                                     
+            while not unvisited.empty():
+                (current_elevation, current_distance, current_node) = unvisited.get()
+                visited.append(current_node)
+                for neighbor_node in G.neighbors(current_node):
+                    if neighbor_node not in visited:
+                        updated_distance = G.edges[current_node, neighbor_node, 0]['length'] + current_distance
+                        estimated_distance = updated_distance + self.euclidean(self.coords(G, neighbor_node), self.coords(G, end))
+                        if estimated_distance < max_length:
+                            elevation_gain = self.node_elevation(G, current_node, neighbor_node) + current_elevation
+                            unvisited.put((mode_constant * elevation_gain, updated_distance, neighbor_node))
+                            node_to_parent[neighbor_node] = current_node
+            return self.get_path(node_to_parent, start, end)
 
-        visited = []                                              # List of visited nodes
-        node_to_parent = {}                                       # Dictionary mapping nodes to their parents (used to find path)
-        unvisited = PriorityQueue()                               # PQ of tuples (elevation_gain, dist, node, parent node)
-        unvisited.put((G.nodes[start]['elevation'], 0, start, 0)) # Initialize PQ with the start node
-        mode_constant = -1 if mode == "max" else 1                # Constant used to max/min elevation
+def main():
+    map_generator = GenerateMap()
+    G = map_generator.create_graph("Amherst, MA", "drive")
+    orig = map_generator.address_to_coords("230 Sunset Ave")
+    dest = map_generator.address_to_coords("495 West St")
+    orig_node = map_generator.neareast_node(G, orig)
+    dest_node = map_generator.neareast_node(G, dest)
+    path = map_generator.dijkstra_algorithm(G, orig_node, dest_node, True, .26)
+    print(path)
+    print(map_generator.path_elevation(G, path))
+    print(map_generator.path_length(G, path))
 
-        while not unvisited.empty():
-            # Get the highest priority node and marks it as visited
-            curr = unvisited.get()
-            visited.append(curr[2])
-            # Visit neighbors of the current node 
-            for neighbor in G.neighbors(curr[2]):
-                if neighbor not in visited:
-                    # Find the estimated final distance of the path w/ the neighbor
-                    between_distance = G.edges[curr[2], neighbor, 0]['length'] + curr[1]
-                    euclidean_distance = self.euclidean(self.coords(G, neighbor), self.coords(G, end))
-                    estimated_distance = between_distance + euclidean_distance
-                    # If the estimate is shorter than the maximum_length, add the neighbor to the PQ
-                    if estimated_distance < max_length:
-                        elevation_gain = (G.nodes[neighbor]['elevation'] - G.nodes[curr[2]]['elevation']) + curr[0] if (
-                            G.nodes[neighbor]['elevation'] - G.nodes[curr[2]]['elevation']) > 0 else curr[0]
-                        distance = between_distance
-                        unvisited.put((mode_constant * elevation_gain, distance, neighbor, curr[2]))
-                        node_to_parent[neighbor] = curr[2]
-                    # If the path is too long and we've reached the end node, trace back to the node where it diverges 
-                    if estimated_distance > max_length and neighbor == end:
-                        temp = unvisited.get()
-                        unvisited.put(temp)
-                        current_path = self.get_path(node_to_parent, start, curr[2])
-                        checkpoint = node_to_parent[temp[3]]
-                        if checkpoint in current_path:
-                            for x in range(current_path.index(checkpoint) + 1, len(current_path)):
-                                visited.remove(current_path[x])
-
-        return self.get_path(node_to_parent, start, end)
-
-# def main():
-#     map_generator = GenerateMap()
-#     G = map_generator.create_graph("Amherst, MA", "drive")
-#     orig = map_generator.address_to_coords("230 Sunset Ave")
-#     dest = map_generator.address_to_coords("495 West St")
-#     orig_node = map_generator.neareast_node(G, orig)
-#     dest_node = map_generator.neareast_node(G, dest)
-#     path = map_generator.dijkstra_algorithm(G, orig_node, dest_node, "max", .23)
-#     print(map_generator.path_length(G, path))
-#     print(map_generator.path_elevation(G, path))
-
-# if __name__ == '__main__':
-#     main()
+if __name__ == '__main__':
+    main()
