@@ -11,7 +11,7 @@ def create_path():
     G = map_generator.create_graph(data["city_state"], "drive")
     orig_node = map_generator.neareast_node(G, map_generator.address_to_coords(data["start"]))
     dest_node = map_generator.neareast_node(G, map_generator.address_to_coords(data["end"]))
-    path = map_generator.dijkstra_algorithm(G, orig_node, dest_node, data["mode"], data["percent"])
+    path = map_generator.between_algorithm(G, orig_node, dest_node, data["mode"], data["percent"])
     response = {
         "path": path,
         "elevation": map_generator.path_elevation(G, path),

@@ -1,4 +1,7 @@
 import math
+from networkx.algorithms.shortest_paths.generic import shortest_path
+from numpy import short
+from numpy.lib.function_base import append
 import osmnx as ox
 import networkx as nx
 from geopy.geocoders import Nominatim
@@ -163,6 +166,46 @@ class GenerateMap:
             curr = n_to_p[curr]
         return path
 
+    def between_algorithm(self, G, start, end, max, percent):
+        """
+        Finds the maximum elevation path between the nodes of the shortest path
+
+        Parameters:
+            G(MultiDiGraph): The graph of nodes
+            start(node): The node for the starting location
+            end(node): The node for the ending location
+            max(bool): Whether or not to max or min elevation.
+            percent(float): x% of the shortest path
+
+        Returns:
+            path(list): A list of nodes comprising the path    
+        """
+        path = []
+        distance = 0
+        shortest_path = nx.shortest_path(G, start, end)
+        max_distance = self.path_length(G, nx.shortest_path(G, start, end)) * (1 + percent)
+        # print(self.path_elevation(G, shortest_path))
+        # print(max_distance)
+        for i in range(0, len(shortest_path) - 1):
+            best_candidate = []
+            max_elevation = self.node_elevation(G, shortest_path[i], shortest_path[i+1])
+            candidates = nx.all_simple_paths(G, shortest_path[i], shortest_path[i+1], cutoff=10)
+            for candidate in candidates:
+                if any(x in candidate for x in shortest_path[i+2:]):
+                    continue
+                path_elevation = self.path_elevation(G, candidate)
+                path_length = self.path_length(G, candidate)
+                estimated_distance = distance + path_length + self.euclidean(self.coords(G, shortest_path[i+1]), self.coords(G, end))
+                if path_elevation >= max_elevation and estimated_distance + 2000 < max_distance:
+                    best_candidate = candidate
+                    max_elevation = path_elevation
+            if not best_candidate:
+                best_candidate = [shortest_path[i], shortest_path[i+1]]
+            path.extend(best_candidate[:-1])
+            distance += self.path_length(G, best_candidate)
+        path.append(end)
+        return path
+
     def dijkstra_algorithm(self, G, start, end, max, percent):
             """
             Uses dijkstra's algorithm to find a path where elevation gain is min/max
@@ -201,13 +244,13 @@ def main():
     map_generator = GenerateMap()
     G = map_generator.create_graph("Amherst, MA", "drive")
     orig = map_generator.address_to_coords("230 Sunset Ave")
-    dest = map_generator.address_to_coords("495 West St")
+    dest = map_generator.address_to_coords("1 Campus Center Way")
     orig_node = map_generator.neareast_node(G, orig)
     dest_node = map_generator.neareast_node(G, dest)
-    path = map_generator.dijkstra_algorithm(G, orig_node, dest_node, True, .26)
-    print(path)
+    path = map_generator.between_algorithm(G, orig_node, dest_node, False, .75)
     print(map_generator.path_elevation(G, path))
     print(map_generator.path_length(G, path))
+    print(path)
 
 if __name__ == '__main__':
     main()
