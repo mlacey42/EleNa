@@ -166,7 +166,23 @@ class GenerateMap:
             curr = n_to_p[curr]
         return path
 
-    def between_algorithm(self, G, start, end, max, percent):
+    def path_to_coords(self, G, path):
+        """
+        Convert a path of nodes to coordinates.
+
+        Parameters:
+            G(MultiDiGraph): The graph of nodes
+            path(list): A list of nodes comprising the path
+
+        Returns:
+            coordinates(list): A list coordinates comprised of tuples
+        """
+        coordinates = []
+        for node in path:
+            coordinates.append(self.coords(G, node))
+        return coordinates
+
+    def between_algorithm(self, G, start, end, percent):
         """
         Finds the maximum elevation path between the nodes of the shortest path
 
@@ -184,8 +200,6 @@ class GenerateMap:
         distance = 0
         shortest_path = nx.shortest_path(G, start, end)
         max_distance = self.path_length(G, nx.shortest_path(G, start, end)) * (1 + percent)
-        # print(self.path_elevation(G, shortest_path))
-        # print(max_distance)
         for i in range(0, len(shortest_path) - 1):
             best_candidate = []
             max_elevation = self.node_elevation(G, shortest_path[i], shortest_path[i+1])
@@ -238,19 +252,23 @@ class GenerateMap:
                             elevation_gain = self.node_elevation(G, current_node, neighbor_node) + current_elevation
                             unvisited.put((mode_constant * elevation_gain, updated_distance, neighbor_node))
                             node_to_parent[neighbor_node] = current_node
-            return self.get_path(node_to_parent, start, end)
+            try:
+                return self.get_path(node_to_parent, start, end)
+            except:
+                return nx.shortest_path(G, start, end)
 
-def main():
-    map_generator = GenerateMap()
-    G = map_generator.create_graph("Amherst, MA", "drive")
-    orig = map_generator.address_to_coords("230 Sunset Ave")
-    dest = map_generator.address_to_coords("1 Campus Center Way")
-    orig_node = map_generator.neareast_node(G, orig)
-    dest_node = map_generator.neareast_node(G, dest)
-    path = map_generator.between_algorithm(G, orig_node, dest_node, False, .75)
-    print(map_generator.path_elevation(G, path))
-    print(map_generator.path_length(G, path))
-    print(path)
+# def main():
+#     map_generator = GenerateMap()
+#     G = map_generator.create_graph("Amherst, MA", "drive")
+#     orig = map_generator.address_to_coords("230 Sunset Ave")
+#     dest = map_generator.address_to_coords("1199 N Pleasant St")
+#     orig_node = map_generator.neareast_node(G, orig)
+#     dest_node = map_generator.neareast_node(G, dest)
+#     path = map_generator.dijkstra_algorithm(G, orig_node, dest_node, False, .15)
+#     print(map_generator.path_to_coords(G, path))
+#     print("Path Elevation: {elevation}".format(elevation = map_generator.path_elevation(G, path)))
+#     print("Path Length: {length}".format(length = map_generator.path_length(G, path)))
+#     print(path)
 
-if __name__ == '__main__':
-    main()
+# if __name__ == '__main__':
+#     main()
