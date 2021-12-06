@@ -27,6 +27,7 @@ dependencies:
   - expat=2.4.1=h39d44d4_0
   - fiona=1.8.20=py39hea8b339_1
   - flask=1.1.2=py_0
+  - flask-cors=3.0.9=py_0
   - folium=0.12.0=pyhd8ed1ab_1
   - font-ttf-dejavu-sans-mono=2.37=hab24e00_0
   - font-ttf-inconsolata=3.000=h77eed37_0
@@ -146,4 +147,3 @@ dependencies:
   - xz=5.2.5=h62dcd97_1
   - zlib=1.2.11=h8ffe710_1013
   - zstd=1.5.0=h6255e5f_0
-prefix: F:\anaconda3\envs\ox
