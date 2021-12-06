@@ -11,24 +11,26 @@ const Suggestion = ({ suggestion, onClick }) => {
     );
 };
 
-function SearchField({ setLocation }) {
+function SearchField({ setLocation, clearRoute }) {
     const [suggestions, setSuggestions] = useState([]);
     const [focus, setFocus] = useState(false);
     const [choose, setChoose] = useState(false);
     const [value, setValue] = useState('');
     useEffect(() => {
         const exec = setTimeout(async () => {
+            clearRoute();
             const query = value.trim();
             if (query) {
                 const provider = new OpenStreetMapProvider();
                 const results = await provider.search({ query });
                 setSuggestions(results);
             } else {
+                setLocation([]);
                 setSuggestions([]);
             }
         }, 500);
         return () => clearTimeout(exec);
-    }, [value]);
+    }, [value, clearRoute, setLocation]);
     return (
         <div className={styles.container}>
             <input

@@ -1,7 +1,7 @@
-import { MapContainer, Marker, TileLayer } from 'react-leaflet';
+import { MapContainer, Marker, Polyline, TileLayer } from 'react-leaflet';
 import * as styles from '../style/EleNa.module.css';
 import 'leaflet/dist/leaflet.css';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import SearchField from './SearchField';
 import markerIconPng from 'leaflet/dist/images/marker-icon.png';
 import { Icon } from 'leaflet';
@@ -19,25 +19,48 @@ const EleNa = () => {
     const [elevationGain, setElevationGain] = useState(false);
     const [extraDistance, setExtraDistance] = useState('');
 
-    const onSearch = async () => {
-        const obj = {
-            city_state: '',
-            start: source,
-            end: target,
-            mode: elevationGain ? 'max' : 'min',
-            extra_distance: extraDistance,
-        };
-        const res = await fetch('/api/elevation', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(obj),
-        });
+    const [routingElement, setRoutingElement] = useState(null);
 
-        const data = await res.json();
-        console.log(data);
+    const onSearch = async () => {
+        try {
+            if (Object.keys(target).length === 0) {
+                alert('Please select a target location');
+                return;
+            }
+            if (Object.keys(source).length === 0) {
+                alert('Please select a source location');
+                return;
+            }
+            const obj = {
+                city_state: 'Amherst, MA',
+                start: source,
+                end: target,
+                mode: elevationGain ? 'max' : 'min',
+                extra_distance: extraDistance,
+            };
+            const res = await fetch('http://127.0.0.1:5000/create_path', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*',
+                },
+                body: JSON.stringify(obj),
+            });
+
+            const data = await res.json();
+            console.log(data);
+            const waypoints = data.path.map((coor) => [coor[1], coor[0]]);
+            setRoutingElement(
+                <Polyline color="#6FA1EC" positions={waypoints} />
+            );
+        } catch (err) {
+            window.alert(err);
+        }
     };
+
+    const clearRoute = useCallback(() => {
+        setRoutingElement(null);
+    }, []);
 
     return (
         <div className={styles.EleNa}>
@@ -47,6 +70,7 @@ const EleNa = () => {
                         FROM
                         <SearchField
                             setLocation={(x, y) => setSource({ x, y })}
+                            clearRoute={clearRoute}
                         />
                     </div>
                     <br />
@@ -54,6 +78,7 @@ const EleNa = () => {
                         TO
                         <SearchField
                             setLocation={(x, y) => setTarget({ x, y })}
+                            clearRoute={clearRoute}
                         />
                     </div>
                 </div>
@@ -134,6 +159,7 @@ const EleNa = () => {
                                 }
                             />
                         )}
+                    {routingElement}
                 </MapContainer>
             </div>
         </div>
