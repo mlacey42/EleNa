@@ -18,7 +18,6 @@ function SearchField({ setLocation, clearRoute }) {
     const [value, setValue] = useState('');
     useEffect(() => {
         const exec = setTimeout(async () => {
-            clearRoute();
             const query = value.trim();
             if (query) {
                 const provider = new OpenStreetMapProvider();
@@ -27,10 +26,11 @@ function SearchField({ setLocation, clearRoute }) {
             } else {
                 setLocation([]);
                 setSuggestions([]);
+                clearRoute();
             }
         }, 500);
         return () => clearTimeout(exec);
-    }, [value, clearRoute, setLocation]);
+    }, [value, setLocation, clearRoute]);
     return (
         <div className={styles.container}>
             <input

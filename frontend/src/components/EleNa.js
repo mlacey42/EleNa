@@ -23,11 +23,19 @@ const EleNa = () => {
 
     const onSearch = async () => {
         try {
-            if (Object.keys(target).length === 0) {
+            if (
+                Object.keys(target).length === 0 ||
+                target.x === undefined ||
+                target.y === undefined
+            ) {
                 alert('Please select a target location');
                 return;
             }
-            if (Object.keys(source).length === 0) {
+            if (
+                Object.keys(source).length === 0 ||
+                source.x === undefined ||
+                source.y === undefined
+            ) {
                 alert('Please select a source location');
                 return;
             }
