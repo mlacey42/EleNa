@@ -5,12 +5,15 @@ import { useCallback, useState } from 'react';
 import SearchField from './SearchField';
 import markerIconPng from 'leaflet/dist/images/marker-icon.png';
 import { Icon } from 'leaflet';
+import Loading from './Loading';
 
 const EleNa = () => {
     const lat = 42.3869382;
     const lng = -72.52991477067445;
     // const provider = new OpenStreetMapProvider();
     // const prov = OpenStreetMapProvider();
+
+    const [loading, setLoading] = useState(false);
 
     const [source, setSource] = useState({});
     const [target, setTarget] = useState({});
@@ -39,6 +42,7 @@ const EleNa = () => {
                 alert('Please select a source location');
                 return;
             }
+            setLoading(true);
             const obj = {
                 city_state: 'Amherst, MA',
                 start: source,
@@ -61,6 +65,7 @@ const EleNa = () => {
             setRoutingElement(
                 <Polyline color="#6FA1EC" positions={waypoints} />
             );
+            setLoading(false);
         } catch (err) {
             window.alert(err);
         }
@@ -72,6 +77,7 @@ const EleNa = () => {
 
     return (
         <div className={styles.EleNa}>
+            {loading && <Loading />}
             <div className={styles.header}>
                 <div className={styles.locations}>
                     <div className={styles.field}>
