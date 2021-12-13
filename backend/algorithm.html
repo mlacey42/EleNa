@@ -18,8 +18,10 @@
     
 <tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
 <td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="math.html">math</a><br>
-</td><td width="25%" valign=top><a href="networkx.html">networkx</a><br>
-</td><td width="25%" valign=top><a href="osmnx.html">osmnx</a><br>
+<a href="networkx.html">networkx</a><br>
+</td><td width="25%" valign=top><a href="os.html">os</a><br>
+<a href="osmnx.html">osmnx</a><br>
+</td><td width="25%" valign=top><a href="re.html">re</a><br>
 </td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#ee77aa">
@@ -53,6 +55,18 @@ Parameters:<br>
 Returns:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;tuple:&nbsp;(longitude,&nbsp;latitude)</tt></dd></dl>
 
+<dl><dt><a name="GenerateMap-between_algorithm"><strong>between_algorithm</strong></a>(self, G, start, end, percent)</dt><dd><tt>Finds&nbsp;the&nbsp;maximum&nbsp;elevation&nbsp;path&nbsp;between&nbsp;the&nbsp;nodes&nbsp;of&nbsp;the&nbsp;shortest&nbsp;path<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;G(MultiDiGraph):&nbsp;The&nbsp;graph&nbsp;of&nbsp;nodes<br>
+&nbsp;&nbsp;&nbsp;&nbsp;start(node):&nbsp;The&nbsp;node&nbsp;for&nbsp;the&nbsp;starting&nbsp;location<br>
+&nbsp;&nbsp;&nbsp;&nbsp;end(node):&nbsp;The&nbsp;node&nbsp;for&nbsp;the&nbsp;ending&nbsp;location<br>
+&nbsp;&nbsp;&nbsp;&nbsp;max(bool):&nbsp;Whether&nbsp;or&nbsp;not&nbsp;to&nbsp;max&nbsp;or&nbsp;min&nbsp;elevation.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;percent(float):&nbsp;x%&nbsp;of&nbsp;the&nbsp;shortest&nbsp;path<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;path(list):&nbsp;A&nbsp;list&nbsp;of&nbsp;nodes&nbsp;comprising&nbsp;the&nbsp;path</tt></dd></dl>
+
 <dl><dt><a name="GenerateMap-coords"><strong>coords</strong></a>(self, G, node)</dt><dd><tt>Returns&nbsp;latitude&nbsp;and&nbsp;longitude&nbsp;given&nbsp;a&nbsp;node<br>
 &nbsp;<br>
 Parameters:<br>
@@ -63,6 +77,7 @@ Returns:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;tuple:&nbsp;(longitude,&nbsp;latitude)</tt></dd></dl>
 
 <dl><dt><a name="GenerateMap-create_graph"><strong>create_graph</strong></a>(self, location, network_type)</dt><dd><tt>Creates&nbsp;a&nbsp;directed&nbsp;graph&nbsp;of&nbsp;nodes&nbsp;and&nbsp;edges&nbsp;for&nbsp;a&nbsp;given&nbsp;location<br>
+Loads&nbsp;the&nbsp;graph&nbsp;from&nbsp;map&nbsp;cache&nbsp;if&nbsp;it&nbsp;already&nbsp;exists<br>
 &nbsp;<br>
 Parameters:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;location(str):&nbsp;A&nbsp;valid&nbsp;location&nbsp;in&nbsp;the&nbsp;form&nbsp;of&nbsp;city,&nbsp;state,&nbsp;country<br>
@@ -71,13 +86,13 @@ Parameters:<br>
 Returns:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;G(MultiDiGraph):&nbsp;The&nbsp;graph&nbsp;of&nbsp;nodes</tt></dd></dl>
 
-<dl><dt><a name="GenerateMap-dijkstra_algorithm"><strong>dijkstra_algorithm</strong></a>(self, G, start, end, mode, percent)</dt><dd><tt>Uses&nbsp;dijkstra's&nbsp;algorithm&nbsp;to&nbsp;find&nbsp;a&nbsp;path&nbsp;where&nbsp;elevation&nbsp;gain&nbsp;is&nbsp;min/max<br>
+<dl><dt><a name="GenerateMap-dijkstra_algorithm"><strong>dijkstra_algorithm</strong></a>(self, G, start, end, max, percent)</dt><dd><tt>Uses&nbsp;dijkstra's&nbsp;algorithm&nbsp;to&nbsp;find&nbsp;a&nbsp;path&nbsp;where&nbsp;elevation&nbsp;gain&nbsp;is&nbsp;min/max<br>
 &nbsp;<br>
 Parameters:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;G(MultiDiGraph):&nbsp;The&nbsp;graph&nbsp;of&nbsp;nodes<br>
 &nbsp;&nbsp;&nbsp;&nbsp;start(node):&nbsp;The&nbsp;node&nbsp;for&nbsp;the&nbsp;starting&nbsp;location<br>
 &nbsp;&nbsp;&nbsp;&nbsp;end(node):&nbsp;The&nbsp;node&nbsp;for&nbsp;the&nbsp;ending&nbsp;location<br>
-&nbsp;&nbsp;&nbsp;&nbsp;mode(str):&nbsp;Whether&nbsp;or&nbsp;not&nbsp;to&nbsp;"max"&nbsp;or&nbsp;"min"&nbsp;elevation.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;max(bool):&nbsp;Whether&nbsp;or&nbsp;not&nbsp;to&nbsp;max&nbsp;or&nbsp;min&nbsp;elevation.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;percent(float):&nbsp;x%&nbsp;of&nbsp;the&nbsp;shortest&nbsp;path<br>
 &nbsp;<br>
 Returns:<br>
@@ -111,6 +126,16 @@ Parameters:<br>
 Returns:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;node:&nbsp;The&nbsp;closest&nbsp;node&nbsp;to&nbsp;coords&nbsp;in&nbsp;G</tt></dd></dl>
 
+<dl><dt><a name="GenerateMap-node_elevation"><strong>node_elevation</strong></a>(self, G, curr, neighbor)</dt><dd><tt>Finds&nbsp;the&nbsp;elevation&nbsp;gain&nbsp;between&nbsp;two&nbsp;nodes<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;G(MultiDiGraph):&nbsp;The&nbsp;graph&nbsp;of&nbsp;nodes<br>
+&nbsp;&nbsp;&nbsp;&nbsp;curr(node):&nbsp;The&nbsp;current&nbsp;node<br>
+&nbsp;&nbsp;&nbsp;&nbsp;neighbor(node):&nbsp;The&nbsp;next&nbsp;node<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;float:&nbsp;elevation&nbsp;gain</tt></dd></dl>
+
 <dl><dt><a name="GenerateMap-path_elevation"><strong>path_elevation</strong></a>(self, G, path)</dt><dd><tt>Finds&nbsp;the&nbsp;elevation&nbsp;gain&nbsp;of&nbsp;a&nbsp;path&nbsp;of&nbsp;nodes<br>
 &nbsp;<br>
 Parameters:<br>
@@ -128,6 +153,15 @@ Parameters:<br>
 &nbsp;<br>
 Returns:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;length(float):&nbsp;The&nbsp;total&nbsp;length&nbsp;of&nbsp;the&nbsp;path</tt></dd></dl>
+
+<dl><dt><a name="GenerateMap-path_to_coords"><strong>path_to_coords</strong></a>(self, G, path)</dt><dd><tt>Convert&nbsp;a&nbsp;path&nbsp;of&nbsp;nodes&nbsp;to&nbsp;coordinates.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;G(MultiDiGraph):&nbsp;The&nbsp;graph&nbsp;of&nbsp;nodes<br>
+&nbsp;&nbsp;&nbsp;&nbsp;path(list):&nbsp;A&nbsp;list&nbsp;of&nbsp;nodes&nbsp;comprising&nbsp;the&nbsp;path<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;coordinates(list):&nbsp;A&nbsp;list&nbsp;coordinates&nbsp;comprised&nbsp;of&nbsp;tuples</tt></dd></dl>
 
 <hr>
 Data descriptors defined here:<br>
