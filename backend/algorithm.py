@@ -1,4 +1,6 @@
 import math
+import os
+import re
 from networkx.algorithms.shortest_paths.generic import shortest_path
 from numpy import short
 from numpy.lib.function_base import append
@@ -56,6 +58,7 @@ class GenerateMap:
     def create_graph(self, location, network_type):
         """
         Creates a directed graph of nodes and edges for a given location
+        Loads the graph from map cache if it already exists
 
         Parameters:
             location(str): A valid location in the form of city, state, country
@@ -64,9 +67,15 @@ class GenerateMap:
         Returns:
             G(MultiDiGraph): The graph of nodes
         """
+        filename = re.sub('[^A-Za-z0-9]+', '', location) + ".graphml"
+        for root, dir, files in os.walk("./mapcache"):
+            if filename in files:
+                G = ox.io.load_graphml("./mapcache/{file}".format(file=filename), node_dtypes=None, edge_dtypes=None, graph_dtypes=None)
+                return G
         G = ox.graph_from_place(location, network_type)
         G = ox.add_node_elevations_google(G, api_key='AIzaSyCtgkUV4Om2PaU5AHX0q8CuMcIn8UREaZY')
         G = ox.add_edge_grades(G)
+        ox.io.save_graphml(G, "./mapcache/{file}".format(file=filename), gephi=False, encoding="utf-8")
         return G
 
     def path_length(self, G, path):
@@ -257,6 +266,7 @@ class GenerateMap:
             except:
                 return nx.shortest_path(G, start, end)
 
+# Used for testing the algorithm
 # def main():
 #     map_generator = GenerateMap()
 #     G = map_generator.create_graph("Amherst, MA", "drive")
@@ -264,11 +274,9 @@ class GenerateMap:
 #     dest = map_generator.address_to_coords("30 Eastman Ln")
 #     orig_node = map_generator.neareast_node(G, orig)
 #     dest_node = map_generator.neareast_node(G, dest)
-#     path = map_generator.dijkstra_algorithm(G, orig_node, dest_node, False, .3)
-#     print(map_generator.path_to_coords(G, path))
+#     path = map_generator.dijkstra_algorithm(G, orig_node, dest_node, False, .6)
 #     print("Path Elevation: {elevation}".format(elevation = map_generator.path_elevation(G, path)))
 #     print("Path Length: {length}".format(length = map_generator.path_length(G, path)))
-#     print(map_generator.path_elevation(G, short_path))
 
 # if __name__ == '__main__':
 #     main()
