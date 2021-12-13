@@ -261,14 +261,14 @@ class GenerateMap:
 #     map_generator = GenerateMap()
 #     G = map_generator.create_graph("Amherst, MA", "drive")
 #     orig = map_generator.address_to_coords("230 Sunset Ave")
-#     dest = map_generator.address_to_coords("1199 N Pleasant St")
+#     dest = map_generator.address_to_coords("30 Eastman Ln")
 #     orig_node = map_generator.neareast_node(G, orig)
 #     dest_node = map_generator.neareast_node(G, dest)
-#     path = map_generator.dijkstra_algorithm(G, orig_node, dest_node, False, .15)
+#     path = map_generator.dijkstra_algorithm(G, orig_node, dest_node, False, .3)
 #     print(map_generator.path_to_coords(G, path))
 #     print("Path Elevation: {elevation}".format(elevation = map_generator.path_elevation(G, path)))
 #     print("Path Length: {length}".format(length = map_generator.path_length(G, path)))
-#     print(path)
+#     print(map_generator.path_elevation(G, short_path))
 
 # if __name__ == '__main__':
 #     main()
