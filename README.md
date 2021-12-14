@@ -6,7 +6,7 @@ EleNa is an elevation-based navigation system that determines, given a start and
 
 ## Backend
 
-The backend makes use of a conda environment, so miniconda or anaconda must be installed. To download the dependencies for the conda environment, use the following command:  
+The backend makes use of a conda environment, so [miniconda](https://docs.conda.io/en/latest/miniconda.html) or [anaconda](https://www.anaconda.com/products/individual) must be installed. To download the dependencies for the conda environment, use the following command:  
 `conda env update --file environment.yml --prune`
 
 Once installed, activate the environment using one of the following commands (depending on your os):  
@@ -16,7 +16,6 @@ Once installed, activate the environment using one of the following commands (de
 To run the Flask server use:  
  `python app.py`
 
-
 ## Frontend
 
 To install the frontend dependencies use:  
@@ -25,4 +24,4 @@ To install the frontend dependencies use:
 Once installed, run the React client using:  
  `npm start`
 
- Open [http://localhost:3000](http://localhost:3000) to view the application in the browser.
+Open [http://localhost:3000](http://localhost:3000) to view the application in the browser.
